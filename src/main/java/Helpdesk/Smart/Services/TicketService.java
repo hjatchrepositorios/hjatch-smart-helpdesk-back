@@ -2,13 +2,15 @@
 package Helpdesk.Smart.Services;
 
 import Helpdesk.Smart.Entidades.Ticket;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 public interface TicketService {
 
-    List<Ticket> getAllTickets();
+    Page<Ticket> getTicketsByDate(LocalDateTime from, LocalDateTime to, Pageable pageable);
     
     Optional<Ticket> getTicketById(String id);
     
