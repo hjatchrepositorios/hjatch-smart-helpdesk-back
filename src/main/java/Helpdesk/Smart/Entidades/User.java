@@ -15,9 +15,11 @@ public class User {
 
     private String name;
 
+    private String surname;
+    
+    private String idKeycloak;
+    
     private String email;
 
-    private String password;
 
-    // Constructor, getters and setters
 }

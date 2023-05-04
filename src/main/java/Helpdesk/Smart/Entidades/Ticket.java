@@ -11,9 +11,8 @@ import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-
 
 @Document(collection = "tickets")
 @Data
@@ -26,16 +25,16 @@ public class Ticket {
 
     private String description;
 
-    private User createdBy;
+    private String createdBy;
 
-    private Date creationDate;
-
+    @DBRef
     private User assignedTo;
 
     private Date assignmentDate;
 
-    private Priority priority;
+    private String priority;
 
+    @DBRef
     private Category category;
 
     private List<Comment> comments;
@@ -43,7 +42,7 @@ public class Ticket {
     private List<Attachment> attachments;
 
     private TicketStatus status;
-    
+
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate

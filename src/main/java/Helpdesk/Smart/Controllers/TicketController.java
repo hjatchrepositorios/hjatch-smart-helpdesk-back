@@ -1,4 +1,3 @@
-
 package Helpdesk.Smart.Controllers;
 
 import Helpdesk.Smart.Entidades.Ticket;
@@ -27,12 +26,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping("/api/tickets")
 @CrossOrigin("*")
 public class TicketController {
-    
+
     private final TicketService ticketService;
 
     @Autowired
@@ -50,11 +48,11 @@ public class TicketController {
         }
     }
 
-@GetMapping
+    @GetMapping
     public ResponseEntity<Page<Ticket>> getTicketsByDate(@RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
-                                                         @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
-                                                         @PageableDefault(size = 10, page = 0)
-                                                         @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC)Pageable pageable) {
+            @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
+            @PageableDefault(size = 10, page = 0)
+            @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<Ticket> tickets = ticketService.getTicketsByDate(start, end, pageable);
         return ResponseEntity.ok(tickets);
     }
@@ -77,12 +75,12 @@ public class TicketController {
     }
 
     @DeleteMapping("/{id}")
-public ResponseEntity<Void> deleteTicket(@PathVariable String id) {
-    try {
-        ticketService.deleteTicket(id);
-        return ResponseEntity.noContent().build();
-    } catch (ResourceNotFoundException e) {
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deleteTicket(@PathVariable String id) {
+        try {
+            ticketService.deleteTicket(id);
+            return ResponseEntity.noContent().build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
-}
 }

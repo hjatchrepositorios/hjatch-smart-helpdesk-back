@@ -2,6 +2,7 @@
 package Helpdesk.Smart.ServicesImpl;
 
 import Helpdesk.Smart.Entidades.Ticket;
+import Helpdesk.Smart.Entidades.TicketStatus;
 import Helpdesk.Smart.Repositories.TicketRepository;
 import Helpdesk.Smart.Services.TicketService;
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public Ticket createTicket(Ticket ticket) {
+        ticket.setStatus(TicketStatus.OPEN);
         return ticketRepository.save(ticket);
     }
 
