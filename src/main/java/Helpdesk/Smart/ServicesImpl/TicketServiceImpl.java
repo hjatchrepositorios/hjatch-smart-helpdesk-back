@@ -3,6 +3,7 @@ package Helpdesk.Smart.ServicesImpl;
 
 import Helpdesk.Smart.Entidades.Ticket;
 import Helpdesk.Smart.Entidades.TicketStatus;
+import Helpdesk.Smart.Entidades.User;
 import Helpdesk.Smart.Repositories.TicketRepository;
 import Helpdesk.Smart.Services.TicketService;
 import java.time.LocalDateTime;
@@ -55,6 +56,11 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public Page<Ticket> getTicketsByDate(LocalDateTime start, LocalDateTime end, Pageable pageable) {
         return ticketRepository.findByCreatedAtBetween(start, end, pageable);
+    }
+
+    @Override
+    public Page<Ticket> getTicketsByIdKeycloakAndStatus(User user, String status, Pageable pageable) {
+         return ticketRepository.findByAssignedToAndStatus(user, status, pageable);
     }
 
 }

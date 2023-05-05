@@ -1,7 +1,10 @@
 package Helpdesk.Smart.Controllers;
 
 import Helpdesk.Smart.Entidades.Ticket;
+import Helpdesk.Smart.Entidades.User;
+import Helpdesk.Smart.Repositories.UserRepository;
 import Helpdesk.Smart.Services.TicketService;
+import Helpdesk.Smart.Services.UserService;
 import Helpdesk.Smart.ServicesImpl.ResourceNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,6 +40,8 @@ public class TicketController {
     public TicketController(TicketService ticketService) {
         this.ticketService = ticketService;
     }
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/{id}")
     public ResponseEntity<Ticket> getTicketById(@PathVariable String id) {
@@ -55,6 +60,21 @@ public class TicketController {
             @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<Ticket> tickets = ticketService.getTicketsByDate(start, end, pageable);
         return ResponseEntity.ok(tickets);
+    }
+
+    @GetMapping("keycloak/{idKeycloak}")
+    public ResponseEntity<Page<Ticket>> getTicketsByIdKeycloakAndStatus(
+            @PathVariable String idKeycloak,
+            @RequestParam(name = "status", defaultValue = "OPEN") String status,
+            @PageableDefault(size = 10, page = 0)
+            @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        User user = userRepository.findOneByIdKeycloak(idKeycloak);
+        if (user != null) {
+            Page<Ticket> tickets = ticketService.getTicketsByIdKeycloakAndStatus(user, status, pageable);
+            return ResponseEntity.ok(tickets);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
