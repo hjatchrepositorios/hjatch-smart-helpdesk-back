@@ -1,12 +1,11 @@
 package Helpdesk.Smart.Controllers;
 
 import Helpdesk.Smart.Entidades.Ticket;
+import Helpdesk.Smart.Entidades.TicketStatus;
 import Helpdesk.Smart.Entidades.User;
 import Helpdesk.Smart.Repositories.UserRepository;
 import Helpdesk.Smart.Services.TicketService;
-import Helpdesk.Smart.Services.UserService;
 import Helpdesk.Smart.ServicesImpl.ResourceNotFoundException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +74,16 @@ public class TicketController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+    
+    @GetMapping("myTickets/{idKeycloak}")
+    public ResponseEntity<?> getTicketsByIdKeycloakAndStatus(@PathVariable String idKeycloak) {
+        User assignedTo = userRepository.findOneByIdKeycloak(idKeycloak);
+        if (assignedTo != null) {
+            int total=ticketService.getTicketsInProgress(TicketStatus.OPEN, assignedTo);
+            return ResponseEntity.ok(total);
+        }
+        return ResponseEntity.ok(0);
     }
 
     @PostMapping

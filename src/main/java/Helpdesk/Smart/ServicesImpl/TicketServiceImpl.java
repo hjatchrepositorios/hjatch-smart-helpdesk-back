@@ -7,6 +7,7 @@ import Helpdesk.Smart.Entidades.User;
 import Helpdesk.Smart.Repositories.TicketRepository;
 import Helpdesk.Smart.Services.TicketService;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,7 +29,13 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public Ticket createTicket(Ticket ticket) {
-        ticket.setStatus(TicketStatus.OPEN);
+        if(ticket.getAssignedTo() != null){
+            ticket.setStatus(TicketStatus.IN_PROGRESS);
+            ticket.setAssignmentDate(new Date());
+        }else{
+           ticket.setStatus(TicketStatus.OPEN); 
+        }
+        
         return ticketRepository.save(ticket);
     }
 
@@ -61,6 +68,11 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public Page<Ticket> getTicketsByIdKeycloakAndStatus(User user, String status, Pageable pageable) {
          return ticketRepository.findByAssignedToAndStatus(user, status, pageable);
+    }
+
+    @Override
+    public int getTicketsInProgress(TicketStatus ts, User assignedTo) {
+        return ticketRepository.countByStatusAndAssignedTo(ts, assignedTo);
     }
 
 }

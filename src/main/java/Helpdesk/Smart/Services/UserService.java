@@ -2,6 +2,7 @@
 package Helpdesk.Smart.Services;
 
 import Helpdesk.Smart.Entidades.User;
+import Helpdesk.Smart.Entidades.UserStatus;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,4 +14,5 @@ public interface UserService {
     User update(String id, User user);
     void delete(String id);
     List<User> getAll();
+    List<User> getUsersByStatus(UserStatus us);
 }

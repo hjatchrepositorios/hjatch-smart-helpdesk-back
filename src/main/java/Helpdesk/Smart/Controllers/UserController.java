@@ -5,8 +5,10 @@
 package Helpdesk.Smart.Controllers;
 
 import Helpdesk.Smart.Entidades.User;
+import Helpdesk.Smart.Entidades.UserStatus;
 import Helpdesk.Smart.Services.UserService;
 import Helpdesk.Smart.ServicesImpl.ResourceNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +24,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- *
- * @author user
- */
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin("*")
 public class UserController {
+
     private final UserService userService;
 
     @Autowired
@@ -46,7 +45,7 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     @GetMapping("/idKeycloak/{id}")
     public ResponseEntity<?> getByIdKeycloak(@PathVariable String id) {
         Optional<User> user = userService.getUserByIdKeycloak(id);
@@ -58,9 +57,17 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getCategories(){
+    public ResponseEntity<List<User>> getUsuarios() {
         List<User> categories = userService.getAll();
         return ResponseEntity.ok(categories);
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<User>> getUsuariosPorEstado(@PathVariable String status) {
+        List<User> users = status.equals("active")
+                ? userService.getUsersByStatus(UserStatus.ACTIVE)
+                : userService.getUsersByStatus(UserStatus.INACTIVE);
+        return ResponseEntity.ok(users);
     }
 
     @PostMapping

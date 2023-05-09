@@ -5,6 +5,7 @@
 package Helpdesk.Smart.ServicesImpl;
 
 import Helpdesk.Smart.Entidades.User;
+import Helpdesk.Smart.Entidades.UserStatus;
 import Helpdesk.Smart.Repositories.UserRepository;
 import Helpdesk.Smart.Services.UserService;
 import java.util.List;
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User user) {
+        user.setStatus(UserStatus.ACTIVE);
         return userRepository.save(user);
     }
 
@@ -47,7 +49,9 @@ public class UserServiceImpl implements UserService {
     public void delete(String id) {
         Optional<User> existing = userRepository.findById(id);
         if (existing.isPresent()) {
-            userRepository.deleteById(id);
+            User user=existing.get();
+            user.setStatus(UserStatus.INACTIVE);
+            userRepository.save(user);
         } else {
             throw new ResourceNotFoundException("Not found with id: " + id);
         }
@@ -60,6 +64,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> getUserByIdKeycloak(String idKeycloak) {
         return userRepository.findByIdKeycloak(idKeycloak);
+    }
+
+    @Override
+    public List<User> getUsersByStatus(UserStatus us) {
+        return userRepository.findUserByStatus(us);
     }
 
 }
